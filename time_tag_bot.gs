@@ -8,9 +8,10 @@ Publish > Deploy as web app...
 var bot_url = '';
 var token = '';
 var telegram_api_url = 'https://api.telegram.org/bot';
+var error_chat_id = 12345;
 
 function doPost(e) {
-  MailApp.sendEmail('@gmail.com', e.postData.type + ' 4', JSON.stringify(e));
+  error_msg(e);
 }
 
 function set_webhook() {
@@ -34,6 +35,21 @@ function telegram_api_call(method, payload) {
   }
   
   return false;
-  
+}
+
+function send_message(chat_id, text) {
+  telegram_api_call('sendMessage', {
+    'chat_id': chat_id,
+    'text': text
+  });
+}
+
+function error_msg(msg) {
+  send_message(error_chat_id, 'ERROR');
+  telegram_api_call('sendMessage', {
+    'chat_id': error_chat_id,
+    'parse_mode': 'HTML',
+    'text': JSON.stringify(msg)
+  });
 }
 
