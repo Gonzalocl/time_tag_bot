@@ -11,7 +11,7 @@ var telegram_api_url = 'https://api.telegram.org/bot';
 var error_chat_id = 12345;
 
 function doPost(e) {
-  error_msg(e);
+  log_msg('INFO', e);
 }
 
 function set_webhook() {
@@ -44,12 +44,27 @@ function send_message(chat_id, text) {
   });
 }
 
-function error_msg(msg) {
-  send_message(error_chat_id, 'ERROR');
-  telegram_api_call('sendMessage', {
-    'chat_id': error_chat_id,
-    'parse_mode': 'HTML',
-    'text': JSON.stringify(msg)
-  });
+function log_msg(log_tag, msg) {
+  var params = {
+    'method': 'post',
+    'contentType': 'application/json',
+    'payload': JSON.stringify({
+      'chat_id': error_chat_id,
+      'text': JSON.stringify(log_tag)
+    })
+  };
+  UrlFetchApp.fetch(telegram_api_url + token + '/sendMessage', params);
+
+  // TODO format monospace
+  params = {
+    'method': 'post',
+    'contentType': 'application/json',
+    'payload': JSON.stringify({
+      'chat_id': error_chat_id,
+      'parse_mode': 'HTML',
+      'text': JSON.stringify(msg)
+    })
+  };
+  UrlFetchApp.fetch(telegram_api_url + token + '/sendMessage', params);
 }
 
