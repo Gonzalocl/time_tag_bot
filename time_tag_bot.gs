@@ -11,7 +11,8 @@ var telegram_api_url = 'https://api.telegram.org/bot';
 var error_chat_id = 12345;
 
 function doPost(e) {
-  log_msg('INFO', e);
+  var update = JSON.parse(e.postData.contents);
+  pin_chat_message(update.message.chat.id, update.message.message_id);
 }
 
 function set_webhook() {
@@ -39,9 +40,23 @@ function telegram_api_call(method, payload) {
 }
 
 function send_message(chat_id, text) {
-  telegram_api_call('sendMessage', {
+  return telegram_api_call('sendMessage', {
     'chat_id': chat_id,
     'text': text
+  });
+}
+
+function pin_chat_message(chat_id, message_id) {
+  return telegram_api_call('pinChatMessage', {
+    'chat_id': chat_id,
+    'message_id': message_id
+  });
+}
+
+function unpin_chat_message(chat_id, message_id) {
+  return telegram_api_call('unpinChatMessage', {
+    'chat_id': chat_id,
+    'message_id': message_id
   });
 }
 
