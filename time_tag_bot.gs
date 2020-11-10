@@ -32,9 +32,10 @@ function telegram_api_call(method, payload) {
     
   if (response.getResponseCode() == 200) {
     return JSON.parse(response.getContentText());
+  } else {
+    log_msg('ERROR: telegram_api_call', [method, payload, response]);
+    return false;
   }
-  
-  return false;
 }
 
 function send_message(chat_id, text) {
