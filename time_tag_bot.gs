@@ -8,7 +8,7 @@ Publish > Deploy as web app...
 var bot_url = '';
 var token = '';
 var telegram_api_url = 'https://api.telegram.org/bot';
-var error_chat_id = 12345;
+var log_chat_id = 12345;
 
 function doPost(e) {
   var update = JSON.parse(e.postData.contents);
@@ -65,8 +65,8 @@ function log_msg(log_tag, msg) {
     'method': 'post',
     'contentType': 'application/json',
     'payload': JSON.stringify({
-      'chat_id': error_chat_id,
-      'text': JSON.stringify(log_tag)
+      'chat_id': log_chat_id,
+      'text': JSON.stringify(log_tag).substring(0, 4000)
     })
   };
   UrlFetchApp.fetch(telegram_api_url + token + '/sendMessage', params);
@@ -76,9 +76,9 @@ function log_msg(log_tag, msg) {
     'method': 'post',
     'contentType': 'application/json',
     'payload': JSON.stringify({
-      'chat_id': error_chat_id,
+      'chat_id': log_chat_id,
       'parse_mode': 'HTML',
-      'text': JSON.stringify(msg)
+      'text': JSON.stringify(msg).substring(0, 4000)
     })
   };
   UrlFetchApp.fetch(telegram_api_url + token + '/sendMessage', params);
