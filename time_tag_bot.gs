@@ -11,8 +11,20 @@ var telegram_api_url = 'https://api.telegram.org/bot';
 var log_chat_id = 12345;
 
 function doPost(e) {
-  var update = JSON.parse(e.postData.contents);
-  pin_chat_message(update.message.chat.id, update.message.message_id);
+  //log_msg('DEBUG', e);
+  try {
+    if (e.postData.type == 'application/json') {
+      new_update(JSON.parse(e.postData.contents));
+    } else {
+      log_msg('ERROR: doPost', e);
+    }
+  } catch (error) {
+    log_msg('ERROR: doPost: exception', [error,  e]);
+  }
+}
+
+function new_update(update) {
+  send_message(update.message.chat.id, 0);
 }
 
 function set_webhook() {
@@ -35,7 +47,7 @@ function telegram_api_call(method, payload) {
   if (response.getResponseCode() == 200) {
     return JSON.parse(response.getContentText());
   } else {
-    log_msg('ERROR: telegram_api_call', [method, payload, response.getResponseCode(), response.getContentText()]);
+    log_msg('ERROR: telegram_api_call', [method, response.getResponseCode(), response.getContentText(), payload]);
     return false;
   }
 }
