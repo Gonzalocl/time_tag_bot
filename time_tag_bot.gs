@@ -26,15 +26,16 @@ function telegram_api_call(method, payload) {
   var params = {
     'method': 'post',
     'contentType': 'application/json',
+    'muteHttpExceptions': true,
     'payload': JSON.stringify(payload)
   };
-  
+
   var response = UrlFetchApp.fetch(telegram_api_url + token + '/' + method, params);
-    
+
   if (response.getResponseCode() == 200) {
     return JSON.parse(response.getContentText());
   } else {
-    log_msg('ERROR: telegram_api_call', [method, payload, response]);
+    log_msg('ERROR: telegram_api_call', [method, payload, response.getResponseCode(), response.getContentText()]);
     return false;
   }
 }
@@ -64,6 +65,7 @@ function log_msg(log_tag, msg) {
   var params = {
     'method': 'post',
     'contentType': 'application/json',
+    'muteHttpExceptions': true,
     'payload': JSON.stringify({
       'chat_id': log_chat_id,
       'text': JSON.stringify(log_tag).substring(0, 4000)
@@ -75,6 +77,7 @@ function log_msg(log_tag, msg) {
   params = {
     'method': 'post',
     'contentType': 'application/json',
+    'muteHttpExceptions': true,
     'payload': JSON.stringify({
       'chat_id': log_chat_id,
       'parse_mode': 'HTML',
