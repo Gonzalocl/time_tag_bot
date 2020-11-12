@@ -65,10 +65,14 @@ function check_update(update) {
 
 function command_tag(update) {
   var response = pin_chat_message(update.message.chat.id, update.message.message_id);
+  var tags_status = new_active_tag(chatupdate.message.chat.id_id,
+                                   update.message.message_id,
+                                   update.message.text)
 }
 
 function command_e(update) {
-  var response = unpin_chat_message(update.message.chat.id, update.message.reply_to_message.message_id);
+  var response = unpin_chat_message(update.message.chat.id,
+                                    update.message.reply_to_message.message_id);
 }
 
 function command_end(update) {
@@ -95,7 +99,8 @@ function telegram_api_call(method, payload) {
   if (response.getResponseCode() == 200) {
     return JSON.parse(response.getContentText());
   } else {
-    log_msg('ERROR: telegram_api_call', [method, response.getResponseCode(), response.getContentText(), payload]);
+    log_msg('ERROR: telegram_api_call', [method, response.getResponseCode(),
+                                         response.getContentText(), payload]);
     return false;
   }
 }
@@ -104,6 +109,18 @@ function send_message(chat_id, text) {
   return telegram_api_call('sendMessage', {
     'chat_id': chat_id,
     'text': text
+  });
+}
+
+function set_custom_keyboard(chat_id, text, buttons) {
+  var custom_keyboard = {
+    'keyboard': buttons,
+    'resize_keyboard': true
+  };
+  return telegram_api_call('sendMessage', {
+    'chat_id': chat_id,
+    'text': text,
+    'reply_markup': JSON.stringify(custom_keyboard)
   });
 }
 
@@ -119,6 +136,46 @@ function unpin_chat_message(chat_id, message_id) {
     'chat_id': chat_id,
     'message_id': message_id
   });
+}
+
+function new_active_tag(chat_id, message_id, tag) {
+  var propertiesService = PropertiesService.getScriptProperties();
+  var tags_status = JSON.parse(propertiesService.getProperty(tags_status_key));
+  
+  if (!tags_status[chat_id]) {
+    tags_status[chat_id] = {'active_tags': [], 'recent_tags': []}
+  }
+  
+  tags_status[chat_id].active_tags.push({'message_id': message_id, 'tag': tag});
+  tags_status[chat_id].recent_tags.push(tag);
+  
+  var keyboard_buttons = get_custom_keyboard_buttons(tags_status[chat_id]);
+  set_custom_keyboard(chat_id, '.', keyboard_buttons)
+  
+  propertiesService.setProperty(tags_status_key, JSON.stringify(tags_status));
+  return tags_status;
+}
+
+function end_active_tag(chat_id, message_id) {
+  var propertiesService = PropertiesService.getScriptProperties();
+  var tags_status = JSON.parse(propertiesService.getProperty(tags_status_key));
+  
+  
+  
+  
+  propertiesService.setProperty(tags_status_key, JSON.stringify(tags_status));
+  return tags_status;
+}
+
+function get_custom_keyboard_buttons(tags_status) {
+  var keyboard_buttons = [];
+  for (tag in tags_status.active_tags) {
+    keyboard_buttons.push('/end ' +
+                          tags_status.active_tags[tag].message_id +
+                          ' ' +
+                          tags_status.active_tags[tag].tag);
+  }
+  return [keyboard_buttons];
 }
 
 function log_msg(log_tag, msg) {
