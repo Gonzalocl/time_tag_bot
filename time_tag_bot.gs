@@ -19,7 +19,7 @@ function doPost(e) {
       log_msg('ERROR: doPost', e);
     }
   } catch (error) {
-    log_msg('ERROR: doPost: exception', [error,  e]);
+    log_msg('ERROR: doPost: exception', [error.stack,  e]);
   }
 }
 
@@ -56,8 +56,16 @@ function get_command(update) {
 }
 
 function check_update(update) {
+  if (update.hasOwnProperty('edited_message')) {
+    //log_msg('LOG: edited_message', update);
+    return false;
+  }
   if (!update.hasOwnProperty('message')) {
     log_msg('ERROR: no message field', update);
+    return false;
+  }
+  if (update.message.hasOwnProperty('pinned_message')) {
+    //log_msg('LOG: pinned_message', update);
     return false;
   }
   return true;
@@ -65,9 +73,12 @@ function check_update(update) {
 
 function command_tag(update) {
   var response = pin_chat_message(update.message.chat.id, update.message.message_id);
-  var tags_status = new_active_tag(chatupdate.message.chat.id_id,
+  var tags_status = new_active_tag(update.message.chat.id,
                                    update.message.message_id,
                                    update.message.text)
+  
+  var keyboard_buttons = get_custom_keyboard_buttons(tags_status[update.message.chat.id]);
+  set_custom_keyboard(update.message.chat.id, '.', keyboard_buttons)
 }
 
 function command_e(update) {
@@ -142,15 +153,16 @@ function new_active_tag(chat_id, message_id, tag) {
   var propertiesService = PropertiesService.getScriptProperties();
   var tags_status = JSON.parse(propertiesService.getProperty(tags_status_key));
   
+  if (!tags_status) {
+    tags_status = {};
+  }
+  
   if (!tags_status[chat_id]) {
     tags_status[chat_id] = {'active_tags': [], 'recent_tags': []}
   }
   
   tags_status[chat_id].active_tags.push({'message_id': message_id, 'tag': tag});
   tags_status[chat_id].recent_tags.push(tag);
-  
-  var keyboard_buttons = get_custom_keyboard_buttons(tags_status[chat_id]);
-  set_custom_keyboard(chat_id, '.', keyboard_buttons)
   
   propertiesService.setProperty(tags_status_key, JSON.stringify(tags_status));
   return tags_status;
@@ -204,8 +216,20 @@ function log_msg(log_tag, msg) {
   UrlFetchApp.fetch(telegram_api_url + token + '/sendMessage', params);
 }
 
+function js_line() {
+  var e = new Error();
+  return e.stack.split('\n')[2];
+}
+
 function debug_doPost() {
   var e = {};
   doPost(e);
+}
+
+function debug_function() {
+  
+  Logger.log(PropertiesService.getScriptProperties().getProperty(tags_status_key));
+  Logger.log(PropertiesService.getScriptProperties().deleteAllProperties());
+  
 }
 
