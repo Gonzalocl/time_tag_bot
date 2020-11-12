@@ -78,7 +78,7 @@ function command_tag(update) {
                                    update.message.text)
   
   var keyboard_buttons = get_custom_keyboard_buttons(tags_status[update.message.chat.id]);
-  set_custom_keyboard(update.message.chat.id, '.', keyboard_buttons)
+  set_custom_keyboard(update.message.chat.id, '/tags_status', keyboard_buttons)
 }
 
 function command_e(update) {
@@ -182,12 +182,12 @@ function end_active_tag(chat_id, message_id) {
 function get_custom_keyboard_buttons(tags_status) {
   var keyboard_buttons = [];
   for (tag in tags_status.active_tags) {
-    keyboard_buttons.push('/end ' +
+    keyboard_buttons.push(['/end ' +
                           tags_status.active_tags[tag].message_id +
                           ' ' +
-                          tags_status.active_tags[tag].tag);
+                          tags_status.active_tags[tag].tag]);
   }
-  return [keyboard_buttons];
+  return keyboard_buttons;
 }
 
 function log_msg(log_tag, msg) {
@@ -230,6 +230,6 @@ function debug_function() {
   
   Logger.log(PropertiesService.getScriptProperties().getProperty(tags_status_key));
   Logger.log(PropertiesService.getScriptProperties().deleteAllProperties());
-  
+
 }
 
