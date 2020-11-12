@@ -73,12 +73,13 @@ function check_update(update) {
 
 function command_tag(update) {
   var response = pin_chat_message(update.message.chat.id, update.message.message_id);
+  // TODO check duplicates
   var tags_status = new_active_tag(update.message.chat.id,
                                    update.message.message_id,
-                                   update.message.text)
+                                   update.message.text);
   
   var keyboard_buttons = get_custom_keyboard_buttons(tags_status[update.message.chat.id]);
-  set_custom_keyboard(update.message.chat.id, '/tags_status', keyboard_buttons)
+  set_custom_keyboard(update.message.chat.id, '/tags_status', keyboard_buttons);
 }
 
 function command_e(update) {
@@ -86,8 +87,44 @@ function command_e(update) {
                                     update.message.reply_to_message.message_id);
 }
 
+
+var command_end_pattern = /\/end (-?\d+)/g;
 function command_end(update) {
-  log_msg('LOG: end', {});
+  var command_match = command_end_pattern.exec(update.message.text);
+  if (command_match.length < 2) {
+    log_msg('ERROR: command /end wrong format', [command_match, update]);
+    return;
+  }
+  
+  var end_tag_message_id = command_match[1];
+  
+  var tags_status = end_active_tag(update.message.chat.id,
+                                   end_tag_message_id);
+  
+  if (!tags_status) {
+    log_msg('ERROR: command /end wrong end_tag_message_id', [tags_status, command_match, update]);
+    return;
+  }
+  
+  var response = unpin_chat_message(update.message.chat.id,
+                                    end_tag_message_id);
+  
+  var keyboard_buttons = get_custom_keyboard_buttons(tags_status[update.message.chat.id]);
+  set_custom_keyboard_and_replay(update.message.chat.id, end_tag_message_id, keyboard_buttons);
+}
+
+function set_custom_keyboard_and_replay(chat_id, message_id, buttons) {
+  var custom_keyboard = {
+    'keyboard': buttons,
+    'resize_keyboard': true
+  };
+  var text = '/e';
+  return telegram_api_call('sendMessage', {
+    'chat_id': chat_id,
+    'text': text,
+    'reply_to_message_id': message_id,
+    'reply_markup': JSON.stringify(custom_keyboard)
+  });  
 }
 
 function set_webhook() {
@@ -172,8 +209,22 @@ function end_active_tag(chat_id, message_id) {
   var propertiesService = PropertiesService.getScriptProperties();
   var tags_status = JSON.parse(propertiesService.getProperty(tags_status_key));
   
+  if (!tags_status) {
+    log_msg('ERROR: no tags_status', tags_status);
+    return false;
+  }
   
+  if (!tags_status[chat_id]) {
+    log_msg('ERROR: no tags_status for chat_id', tags_status);
+    return false;
+  }
   
+  for (tag in tags_status[chat_id].active_tags) {
+    if (tags_status[chat_id].active_tags[tag].message_id == message_id) {
+      tags_status[chat_id].active_tags.splice(tag, 1);
+      break;
+    }
+  }
   
   propertiesService.setProperty(tags_status_key, JSON.stringify(tags_status));
   return tags_status;
