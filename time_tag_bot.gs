@@ -26,13 +26,23 @@ function doPost(e) {
 function new_update(update) {
   if (check_update(update)) {
     var command = get_command(update);
-    var message_id = update.message.message_id;
-    if (command == '/e') {
-      command_e();
+    if (!command) {
+      log_msg('ERROR: no command found', update);
+      
+    } else if (command == '/e') {
+      if (!update.message.hasOwnProperty('reply_to_message')) {
+        log_msg('ERROR: command /e without replay', update);
+        return;
+        
+      }
+      command_e(update);
+      
     } else if (command == '/end') {
-      command_end();
+      command_end(update);
+      
     } else {
-      command_tag();
+      command_tag(update);
+      
     }
   }
 }
@@ -47,21 +57,21 @@ function get_command(update) {
 
 function check_update(update) {
   if (!update.hasOwnProperty('message')) {
-    log_msg('LOG: no message field', update);
+    log_msg('ERROR: no message field', update);
     return false;
   }
   return true;
 }
 
-function command_tag() {
-  log_msg('LOG: tag', {});
+function command_tag(update) {
+  var response = pin_chat_message(update.message.chat.id, update.message.message_id);
 }
 
-function command_e() {
-  log_msg('LOG: e', {});
+function command_e(update) {
+  var response = unpin_chat_message(update.message.chat.id, update.message.reply_to_message.message_id);
 }
 
-function command_end() {
+function command_end(update) {
   log_msg('LOG: end', {});
 }
 
