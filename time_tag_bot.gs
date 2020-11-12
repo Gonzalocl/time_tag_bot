@@ -24,7 +24,45 @@ function doPost(e) {
 }
 
 function new_update(update) {
-  send_message(update.message.chat.id, 0);
+  if (check_update(update)) {
+    var command = get_command(update);
+    var message_id = update.message.message_id;
+    if (command == '/e') {
+      command_e();
+    } else if (command == '/end') {
+      command_end();
+    } else {
+      command_tag();
+    }
+  }
+}
+
+function get_command(update) {
+  for (entity in update.message.entities) {
+    if (update.message.entities[entity].offset == 0) {
+      return update.message.text.substring(0, update.message.entities[entity].length);
+    }
+  }
+}
+
+function check_update(update) {
+  if (!update.hasOwnProperty('message')) {
+    log_msg('LOG: no message field', update);
+    return false;
+  }
+  return true;
+}
+
+function command_tag() {
+  log_msg('LOG: tag', {});
+}
+
+function command_e() {
+  log_msg('LOG: e', {});
+}
+
+function command_end() {
+  log_msg('LOG: end', {});
 }
 
 function set_webhook() {
@@ -97,5 +135,10 @@ function log_msg(log_tag, msg) {
     })
   };
   UrlFetchApp.fetch(telegram_api_url + token + '/sendMessage', params);
+}
+
+function debug_doPost() {
+  var e = {};
+  doPost(e);
 }
 
