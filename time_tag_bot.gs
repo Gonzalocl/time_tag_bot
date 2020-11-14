@@ -23,6 +23,15 @@ function doPost(e) {
   }
 }
 
+var commands_functions = {
+  'no_command_found': no_command_found,
+  '/fix': ignore_command,
+  '/info': ignore_command,
+  '/e': command_e,
+  '/end': command_end,
+  '/tags_status': command_tags_status
+};
+
 function new_update(update) {
   if (check_update(update)) {
     var command = get_command(update);
@@ -30,11 +39,6 @@ function new_update(update) {
       log_msg('ERROR: no command found', update);
       
     } else if (command == '/e') {
-      if (!update.message.hasOwnProperty('reply_to_message')) {
-        log_msg('ERROR: command /e without replay', update);
-        return;
-        
-      }
       command_e(update);
       
     } else if (command == '/end') {
@@ -53,6 +57,7 @@ function get_command(update) {
       return update.message.text.substring(0, update.message.entities[entity].length);
     }
   }
+  //return 'no_command_found';
 }
 
 function check_update(update) {
@@ -83,15 +88,31 @@ function command_tag(update) {
 }
 
 function command_e(update) {
+  if (!update.message.hasOwnProperty('reply_to_message')) {
+    log_msg('ERROR: command v/e without replay', update);
+    return;
+    
+  }
   var response = unpin_chat_message(update.message.chat.id,
                                     update.message.reply_to_message.message_id);
 }
 
+function command_tags_status(update) {
+  log_msg('LOG: command_tags_status not implemented', update);
+}
+
+function no_command_found(update) {
+  log_msg('ERROR: no command found', update);
+}
+
+function ignore_command(update) {
+  log_msg('LOG: command ignored', update);
+}
 
 var command_end_pattern = /\/end (-?\d+)/g;
 function command_end(update) {
   var command_match = command_end_pattern.exec(update.message.text);
-  if (command_match.length < 2) {
+  if (command_match == null) {
     log_msg('ERROR: command /end wrong format', [command_match, update]);
     return;
   }
