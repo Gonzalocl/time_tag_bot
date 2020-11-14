@@ -35,7 +35,11 @@ var commands_functions = {
 function new_update(update) {
   if (check_update(update)) {
     var command = get_command(update);
-    commands_functions[command](update);
+    if (commands_functions.hasOwnProperty(command)) {
+      command_tag(update);
+    } else {
+      commands_functions[command](update);
+    }
   }
 }
 
