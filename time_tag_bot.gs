@@ -35,19 +35,7 @@ var commands_functions = {
 function new_update(update) {
   if (check_update(update)) {
     var command = get_command(update);
-    if (!command) {
-      log_msg('ERROR: no command found', update);
-      
-    } else if (command == '/e') {
-      command_e(update);
-      
-    } else if (command == '/end') {
-      command_end(update);
-      
-    } else {
-      command_tag(update);
-      
-    }
+    commands_functions[command](update);
   }
 }
 
@@ -57,7 +45,7 @@ function get_command(update) {
       return update.message.text.substring(0, update.message.entities[entity].length);
     }
   }
-  //return 'no_command_found';
+  return 'no_command_found';
 }
 
 function check_update(update) {
@@ -89,9 +77,8 @@ function command_tag(update) {
 
 function command_e(update) {
   if (!update.message.hasOwnProperty('reply_to_message')) {
-    log_msg('ERROR: command v/e without replay', update);
+    log_msg('ERROR: command /e without replay', update);
     return;
-    
   }
   var response = unpin_chat_message(update.message.chat.id,
                                     update.message.reply_to_message.message_id);
