@@ -220,7 +220,15 @@ function new_active_tag(chat_id, message_id, tag) {
   }
   
   tags_status[chat_id].active_tags.push({'message_id': message_id, 'tag': tag});
-  tags_status[chat_id].recent_tags.push(tag);
+  
+  var i = 0;
+  var recent_length = tags_status[chat_id].recent_tags.length;
+  while (i < recent_length && tags_status[chat_id].recent_tags[i] != tag) i++;
+  if (i != recent_length) {
+    tags_status[chat_id].recent_tags.splice(i, 1);
+  }
+  
+  tags_status[chat_id].recent_tags.unshift(tag);
   
   propertiesService.setProperty(tags_status_key, JSON.stringify(tags_status));
   return tags_status;
