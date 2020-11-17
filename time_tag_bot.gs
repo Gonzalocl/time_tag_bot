@@ -231,20 +231,27 @@ function end_active_tag(chat_id, message_id) {
   var tags_status = JSON.parse(propertiesService.getProperty(tags_status_key));
   
   if (!tags_status) {
-    log_msg('ERROR: no tags_status', tags_status);
+    log_msg('ERROR: no tags_status', [chat_id, message_id, tags_status]);
     return false;
   }
   
   if (!tags_status[chat_id]) {
-    log_msg('ERROR: no tags_status for chat_id', tags_status);
+    log_msg('ERROR: no tags_status for chat_id', [chat_id, message_id, tags_status]);
     return false;
   }
   
+  var tag_present = false;
   for (tag in tags_status[chat_id].active_tags) {
     if (tags_status[chat_id].active_tags[tag].message_id == message_id) {
       tags_status[chat_id].active_tags.splice(tag, 1);
+      tag_present = true;
       break;
     }
+  }
+  
+  if (!tag_present) {
+    log_msg('ERROR: no tags_status for chat_id and message_id', [chat_id, message_id, tags_status]);
+    return false;
   }
   
   propertiesService.setProperty(tags_status_key, JSON.stringify(tags_status));
