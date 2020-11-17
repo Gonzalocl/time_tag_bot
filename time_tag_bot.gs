@@ -106,7 +106,7 @@ function no_command_found(update) {
 }
 
 function ignore_command(update) {
-  log_msg('LOG: command ignored', update);
+  //log_msg('LOG: command ignored', update);
 }
 
 var command_end_pattern = /\/end (-?\d+)/g;
@@ -267,6 +267,16 @@ function get_custom_keyboard_buttons(tags_status) {
                           ' ' +
                           tags_status.active_tags[tag].tag]);
   }
+  //keyboard_buttons.push(['###########################']);
+  var recent_length = tags_status.recent_tags.length;
+  if ( (recent_length % 2) != 0 ) {
+    recent_length--;
+  }
+  for (var i = 0; i < recent_length; i += 2) {
+    keyboard_buttons.push([tags_status.recent_tags[i], tags_status.recent_tags[i+1]]);
+  }
+  keyboard_buttons[keyboard_buttons.length-1].push(
+    tags_status.recent_tags[tags_status.recent_tags.length-1]);
   return keyboard_buttons;
 }
 
