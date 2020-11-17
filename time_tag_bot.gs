@@ -29,16 +29,17 @@ var commands_functions = {
   '/info': ignore_command,
   '/e': command_e,
   '/end': command_end,
-  '/tags_status': command_tags_status
+  '/tags_status': command_tags_status,
+  '/clean': command_clean
 };
 
 function new_update(update) {
   if (check_update(update)) {
     var command = get_command(update);
     if (commands_functions.hasOwnProperty(command)) {
-      command_tag(update);
-    } else {
       commands_functions[command](update);
+    } else {
+      command_tag(update);
     }
   }
 }
@@ -80,6 +81,8 @@ function command_tag(update) {
 }
 
 function command_e(update) {
+  // TODO handle manual edit custom keyboard and state
+  // TODO factor with end command
   if (!update.message.hasOwnProperty('reply_to_message')) {
     log_msg('ERROR: command /e without replay', update);
     return;
@@ -89,7 +92,13 @@ function command_e(update) {
 }
 
 function command_tags_status(update) {
+  // TODO
   log_msg('LOG: command_tags_status not implemented', update);
+}
+
+function command_clean(update) {
+  // TODO
+  log_msg('LOG: command_clean not implemented', update);
 }
 
 function no_command_found(update) {
@@ -243,6 +252,7 @@ function end_active_tag(chat_id, message_id) {
 }
 
 function get_custom_keyboard_buttons(tags_status) {
+  // TODO use shorter id instead of message_id
   var keyboard_buttons = [];
   for (tag in tags_status.active_tags) {
     keyboard_buttons.push(['/end ' +
