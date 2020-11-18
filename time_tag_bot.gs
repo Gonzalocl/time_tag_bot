@@ -56,16 +56,16 @@ function get_command(update) {
 }
 
 function check_update(update) {
-  if (update.hasOwnProperty('edited_message')) {
-    //log_msg('LOG: edited_message', update);
-    return false;
-  }
   if (!update.hasOwnProperty('message')) {
     log_msg('ERROR: no message field', update);
     return false;
   }
   if (update.message.chat.id != only_accept_chat_id) {
     log_msg('ERROR: update.message.chat.id not only_accept_chat_id', [only_accept_chat_id, update]);
+    return false;
+  }
+  if (update.hasOwnProperty('edited_message')) {
+    //log_msg('LOG: edited_message', update);
     return false;
   }
   if (update.message.hasOwnProperty('pinned_message')) {
