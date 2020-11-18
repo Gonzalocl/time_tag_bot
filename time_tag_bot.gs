@@ -8,7 +8,9 @@ Publish > Deploy as web app...
 var bot_url = '';
 var token = '';
 var telegram_api_url = 'https://api.telegram.org/bot';
+var tags_status_key = 'tags_status_key';
 var log_chat_id = 12345;
+var only_accept_chat_id = 12345;
 
 function doPost(e) {
   //log_msg('DEBUG', e);
@@ -62,6 +64,10 @@ function check_update(update) {
     log_msg('ERROR: no message field', update);
     return false;
   }
+  if (update.message.chat.id != only_accept_chat_id) {
+    log_msg('ERROR: update.message.chat.id not only_accept_chat_id', [only_accept_chat_id, update]);
+    return false;
+  }
   if (update.message.hasOwnProperty('pinned_message')) {
     //log_msg('LOG: pinned_message', update);
     return false;
@@ -109,8 +115,8 @@ function ignore_command(update) {
   //log_msg('LOG: command ignored', update);
 }
 
-var command_end_pattern = /\/end (-?\d+)/g;
 function command_end(update) {
+  var command_end_pattern = /\/end (-?\d+)/g;
   var command_match = command_end_pattern.exec(update.message.text);
   if (command_match == null) {
     log_msg('ERROR: command /end wrong format', [command_match, update]);
