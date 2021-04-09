@@ -1,13 +1,16 @@
 
-const data_file_url = "data.json"
+const data_file_url = "data.json";
 
 // px per hour
 const default_scale = 100;
 
+let tags = [];
+let tags_by_id = {};
+
+main();
 function main() {
     get_data();
 }
-main();
 
 function get_data() {
     const data_request = new XMLHttpRequest();
@@ -22,8 +25,28 @@ function get_data() {
 }
 
 function data_received(data) {
-    console.log(JSON.stringify(data))
-    console.log(data.test)
+    let commands = get_commands(data);
+    process_commands(commands);
+}
+
+function get_commands(data) {
+
+    check_property(data, "messages");
+
+    let commands = [];
+    for (let i = 0; i < data.messages.length; i++) {
+        commands.push(get_command(data.messages[i]));
+    }
+
+    return commands;
+}
+
+function get_command(msg) {
+    return {};
+}
+
+function process_commands(commands) {
+
 }
 
 function generate_scale(start, end, step) {
@@ -32,4 +55,15 @@ function generate_scale(start, end, step) {
     // clear contents
 
     // set style
+}
+
+function check_property(obj, property) {
+    if (!obj.hasOwnProperty(property)) {
+        error_msg("Property error: " + property, obj);
+        throw new Error("Property error: " + property);
+    }
+}
+
+function error_msg(msg, obj) {
+    document.getElementsByTagName("body")[0].innerHTML = msg + "<br><br>" + JSON.stringify(obj);
 }
