@@ -1,0 +1,36 @@
+body {
+    margin: 0;
+    width: 5000px;
+    font-family: "Courier New", monospace;
+}
+
+#scale {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.scale {
+    display: grid;
+    grid-auto-flow: column;
+}
+
+#scale_date {
+    background-color: #aaaaaa;
+    grid-auto-columns: 100px;
+}
+
+#scale_time {
+    background-color: #eeeeee;
+    grid-auto-columns: 50px;
+}
+
+#log {
+    background: repeating-linear-gradient(90deg, #f0f0f0, #f0f0f0 50px, #e8e8e8 50px, #e8e8e8 100px);
+}
+
+.log_entry {
+    position: relative;
+    height: 22px;
+    color: #ffffff;
+}
