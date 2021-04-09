@@ -26,6 +26,10 @@ function get_data() {
 
 function data_received(data) {
     let commands = get_commands(data);
+    for (let i = 0; i < commands.length; i++) {
+        console.log(commands[i].text);
+        console.log(commands[i].tag);
+    }
     process_commands(commands);
 }
 
@@ -33,16 +37,33 @@ function get_commands(data) {
 
     check_property(data, "messages");
 
+    let messages = data.messages.filter(function (msg) {
+        return msg.type === "message";
+    });
+
     let commands = [];
-    for (let i = 0; i < data.messages.length; i++) {
-        commands.push(get_command(data.messages[i]));
+    for (let i = 0; i < messages.length; i++) {
+        commands.push(get_command(messages[i]));
     }
 
     return commands;
 }
 
 function get_command(msg) {
-    return {};
+    let command = {};
+    command.id = msg.id;
+    command.timestamp = msg.date;
+    command.tag = msg.text[0].text;
+    command.text = get_text(msg.text);
+    return command;
+}
+
+function get_text(t) {
+    let text = "";
+    for (let i = 0; i < t.length; i++) {
+        // text += t[i];
+    }
+    return text;
 }
 
 function process_commands(commands) {
