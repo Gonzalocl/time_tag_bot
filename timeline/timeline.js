@@ -61,7 +61,11 @@ function get_command(msg) {
 function get_text(t) {
     let text = "";
     for (let i = 0; i < t.length; i++) {
-        // text += t[i];
+        if (typeof t[i] === "object") {
+            text += t[i].text;
+        } else {
+            text += t[i];
+        }
     }
     return text;
 }
