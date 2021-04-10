@@ -46,6 +46,7 @@ function get_data(tags, tags_by_id) {
 function data_received(data, tags, tags_by_id) {
     let commands = get_commands(data);
     process_commands(tags, tags_by_id, commands);
+    tags.sort(function (a, b) {return a.timestamp_start - b.timestamp_start});
 }
 
 function get_commands(data) {
