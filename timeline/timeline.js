@@ -26,10 +26,6 @@ function get_data() {
 
 function data_received(data) {
     let commands = get_commands(data);
-    for (let i = 0; i < commands.length; i++) {
-        console.log(commands[i].text);
-        console.log(commands[i].tag);
-    }
     process_commands(commands);
 }
 
@@ -52,9 +48,14 @@ function get_commands(data) {
 function get_command(msg) {
     let command = {};
     command.id = msg.id;
-    command.timestamp = msg.date;
+    command.timestamp_start = Date.parse(msg.date);
+    command.fix_start = false;
+    command.fix_end = false;
     command.tag = msg.text[0].text;
     command.text = get_text(msg.text);
+    if (command.tag === "/e") {
+        command.end_id = msg.reply_to_message_id;
+    }
     return command;
 }
 
