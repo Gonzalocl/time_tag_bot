@@ -1,6 +1,16 @@
 
 const data_file_url = "data.json";
-
+const default_locale = "es-ES";
+const default_date_options = {
+    day: "2-digit",
+    weekday: "short",
+    month: "short",
+    year: "2-digit"
+};
+const default_time_options = {
+    hour: "2-digit",
+    minute: "2-digit"
+};
 // px per hour
 const default_scale = 100;
 
@@ -75,10 +85,21 @@ function process_commands(commands) {
 
 }
 
-function generate_scale(start, end, step) {
+function generate_scale(timestamp_start, timestamp_end, step) {
     // get scale elements
+    let scale_date = document.getElementById("scale_date");
+    let scale_time = document.getElementById("scale_time");
 
     // clear contents
+    scale_date.innerHTML = "";
+    scale_time.innerHTML = "";
+
+    // generate timestamps
+    for (let timestamp = timestamp_start; timestamp < timestamp_end; timestamp+=step) {
+        let timestamp_date = new Date(timestamp);
+        console.log(timestamp_date.toLocaleString(default_locale, default_date_options));
+        console.log(timestamp_date.toLocaleString(default_locale, default_time_options));
+    }
 
     // set style
 }
@@ -93,3 +114,5 @@ function check_property(obj, property) {
 function error_msg(msg, obj) {
     document.getElementsByTagName("body")[0].innerHTML = msg + "<br><br>" + JSON.stringify(obj);
 }
+
+generate_scale(Date.parse("2021-03-27T12:00:00"), Date.parse("2021-03-29T12:00:00"), 60*60*1000);
