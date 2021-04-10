@@ -17,6 +17,15 @@ const default_scale = 100;
 let all_tags = [];
 let all_tags_by_id = {};
 
+const commands_functions = {
+    "/fix": command_fix,
+    "/info": command_ignore,
+    "/e": command_e,
+    "/end": command_ignore,
+    "/tags_status": command_ignore,
+    "/clean": command_ignore
+};
+
 main(all_tags, all_tags_by_id);
 function main(tags, tags_by_id) {
     get_data(tags, tags_by_id);
@@ -63,7 +72,7 @@ function get_command(msg) {
     command.fix_end = false;
     command.tag = msg.text[0].text;
     command.text = get_text(msg.text);
-    if (command.tag === "/e") {
+    if (command.tag === "/e" || command.tag === "/fix") {
         command.end_id = msg.reply_to_message_id;
     }
     return command;
@@ -82,7 +91,31 @@ function get_text(t) {
 }
 
 function process_commands(tags, tags_by_id, commands) {
+    for (let i = 0; i < commands.length; i++) {
+        if (commands[i].tag in commands_functions) {
+            commands_functions[commands[i].tag](tags, tags_by_id, commands[i]);
+        } else {
+            command_tag(tags, tags_by_id, commands[i]);
+        }
+    }
+}
 
+// commands functions
+
+function command_fix(tags, tags_by_id, command) {
+    console.log("fix" + command.tag);
+}
+
+function command_e(tags, tags_by_id, command) {
+    console.log("e" + command.tag);
+}
+
+function command_tag(tags, tags_by_id, command) {
+    console.log("tag" + command.tag);
+}
+
+function command_ignore(tags, tags_by_id, command) {
+    // ignored
 }
 
 function generate_scale(timestamp_start, timestamp_end, step) {
