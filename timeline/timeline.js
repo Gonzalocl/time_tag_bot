@@ -48,7 +48,12 @@ function data_received(data, tags, tags_by_id) {
     let commands = get_commands(data);
     process_commands(tags, tags_by_id, commands);
     fix_no_end(tags);
+
+    tags.sort(function (a, b) {return b.timestamp_end - a.timestamp_end});
+    let last_timestamp = get_last_timestamp(tags);
+
     tags.sort(function (a, b) {return a.timestamp_start - b.timestamp_start});
+    let first_timestamp = get_first_timestamp(tags);
 }
 
 function get_commands(data) {
@@ -147,6 +152,25 @@ function fix_no_end(tags) {
             tags[i].timestamp_end = tags[i].timestamp_start + default_duration;
         }
     }
+}
+
+function get_last_timestamp(tags) {
+    let timestamp = tags[0].timestamp_end;
+    let timestamp_date = new Date(timestamp);
+    timestamp_date.setSeconds(0);
+    timestamp_date.setMinutes(0);
+    timestamp_date.setHours(0);
+    timestamp_date.setDate(timestamp_date.getDate()+1);
+    return timestamp_date.getTime();
+}
+
+function get_first_timestamp(tags) {
+    let timestamp = tags[0].timestamp_start;
+    let timestamp_date = new Date(timestamp);
+    timestamp_date.setSeconds(0);
+    timestamp_date.setMinutes(0);
+    timestamp_date.setHours(0);
+    return timestamp_date.getTime();
 }
 
 function check_property(obj, property) {
