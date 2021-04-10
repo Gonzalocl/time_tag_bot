@@ -14,29 +14,29 @@ const default_time_options = {
 // px per hour
 const default_scale = 100;
 
-let tags = [];
-let tags_by_id = {};
+let all_tags = [];
+let all_tags_by_id = {};
 
-main();
-function main() {
-    get_data();
+main(all_tags, all_tags_by_id);
+function main(tags, tags_by_id) {
+    get_data(tags, tags_by_id);
 }
 
-function get_data() {
+function get_data(tags, tags_by_id) {
     const data_request = new XMLHttpRequest();
     data_request.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
             const data = JSON.parse(this.responseText);
-            data_received(data);
+            data_received(data, tags, tags_by_id);
         }
     }
     data_request.open("GET", data_file_url, true);
     data_request.send();
 }
 
-function data_received(data) {
+function data_received(data, tags, tags_by_id) {
     let commands = get_commands(data);
-    process_commands(commands);
+    process_commands(tags, tags_by_id, commands);
 }
 
 function get_commands(data) {
@@ -81,7 +81,7 @@ function get_text(t) {
     return text;
 }
 
-function process_commands(commands) {
+function process_commands(tags, tags_by_id, commands) {
 
 }
 
@@ -114,5 +114,3 @@ function check_property(obj, property) {
 function error_msg(msg, obj) {
     document.getElementsByTagName("body")[0].innerHTML = msg + "<br><br>" + JSON.stringify(obj);
 }
-
-generate_scale(Date.parse("2021-03-27T12:00:00"), Date.parse("2021-03-29T12:00:00"), 60*60*1000);
