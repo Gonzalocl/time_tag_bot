@@ -107,11 +107,12 @@ function command_fix(tags, tags_by_id, command) {
 }
 
 function command_e(tags, tags_by_id, command) {
-    console.log("e" + command.tag);
+    tags_by_id[command.end_id].timestamp_end = command.timestamp_start;
 }
 
 function command_tag(tags, tags_by_id, command) {
-    console.log("tag" + command.tag);
+    tags.push(command);
+    tags_by_id[command.id] = command;
 }
 
 function command_ignore(tags, tags_by_id, command) {
