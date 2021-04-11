@@ -14,6 +14,7 @@ const default_time_options = {
 // px per hour
 const default_scale = 100;
 const default_duration = 24*60*60*1000;
+const default_step = 60*60*1000;
 
 let all_tags = [];
 let all_tags_by_id = {};
@@ -54,6 +55,10 @@ function data_received(data, tags, tags_by_id) {
 
     tags.sort(function (a, b) {return a.timestamp_start - b.timestamp_start});
     let first_timestamp = get_first_timestamp(tags);
+
+    let duration = last_timestamp-first_timestamp;
+
+    set_body_size(duration/1000/60/60*default_scale);
 }
 
 function get_commands(data) {
@@ -171,6 +176,11 @@ function get_first_timestamp(tags) {
     timestamp_date.setMinutes(0);
     timestamp_date.setHours(0);
     return timestamp_date.getTime();
+}
+
+function set_body_size(size) {
+    let body = document.getElementById("body");
+    body.style.width = size + "px";
 }
 
 function check_property(obj, property) {
