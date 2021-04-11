@@ -57,8 +57,11 @@ function data_received(data, tags, tags_by_id) {
     let first_timestamp = get_first_timestamp(tags);
 
     let duration = last_timestamp-first_timestamp;
+    let duration_hours = duration/1000/60/60;
 
-    set_body_size(duration/1000/60/60*default_scale);
+    append_tags(tags, duration_hours);
+
+    set_body_size(duration_hours*default_scale);
 }
 
 function get_commands(data) {
@@ -176,6 +179,14 @@ function get_first_timestamp(tags) {
     timestamp_date.setMinutes(0);
     timestamp_date.setHours(0);
     return timestamp_date.getTime();
+}
+
+function append_tags(tags, duration_hours) {
+    let log = document.getElementById("log");
+    log.innerHTML = "";
+    for (let i = 0; i < tags.length; i++) {
+        // log.appendChild();
+    }
 }
 
 function set_body_size(size) {
