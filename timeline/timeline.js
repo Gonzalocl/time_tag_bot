@@ -61,6 +61,8 @@ function data_received(data, tags, tags_by_id) {
 
     append_tags(tags, first_timestamp, duration);
 
+    generate_scale(first_timestamp, last_timestamp, default_step);
+
     set_body_size(duration_hours*default_scale);
 }
 
@@ -147,11 +149,9 @@ function generate_scale(timestamp_start, timestamp_end, step) {
     // generate timestamps
     for (let timestamp = timestamp_start; timestamp < timestamp_end; timestamp+=step) {
         let timestamp_date = new Date(timestamp);
-        console.log(timestamp_date.toLocaleString(default_locale, default_date_options));
-        console.log(timestamp_date.toLocaleString(default_locale, default_time_options));
+        scale_date.innerText = timestamp_date.toLocaleString(default_locale, default_date_options);
+        scale_time.innerText = timestamp_date.toLocaleString(default_locale, default_time_options);
     }
-
-    // set style
 }
 
 function fix_no_end(tags) {
