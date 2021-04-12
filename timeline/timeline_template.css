@@ -35,4 +35,5 @@ body {
     position: relative;
     height: 22px;
     color: #ffffff;
+    white-space: nowrap;
 }
