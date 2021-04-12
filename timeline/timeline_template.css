@@ -11,18 +11,20 @@ body {
 }
 
 .scale {
-    display: grid;
-    grid-auto-flow: column;
+    display: flex;
+}
+
+.scale div {
+    flex-grow: 1;
+    width: 0;
 }
 
 #scale_date {
     background-color: #aaaaaa;
-    grid-auto-columns: calc(100%/14);
 }
 
 #scale_time {
     background-color: #eeeeee;
-    grid-auto-columns: calc(100%/28);
 }
 
 #log {
