@@ -15,8 +15,8 @@ const default_time_options = {
 const default_scale = 100;
 const default_duration = 24*60*60*1000;
 const default_step = 60*60*1000;
-const default_background_color_a = "#f0f0f0";
-const default_background_color_b = "#e8e8e8";
+const default_background_color_a = "#99ccff";
+const default_background_color_b = "#99ccee";
 const default_color_max = 100;
 
 let all_tags = [];

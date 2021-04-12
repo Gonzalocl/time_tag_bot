@@ -20,15 +20,15 @@ body {
 }
 
 #scale_date {
-    background-color: #aaaaaa;
+    background-color: #67d5ff;
 }
 
 #scale_time {
-    background-color: #eeeeee;
+    background-color: #8cd6ff;
 }
 
 #log {
-    background: repeating-linear-gradient(90deg, #f0f0f0, #f0f0f0 calc(100%/28), #e8e8e8 calc(100%/28), #e8e8e8 calc(100%/14));
+    background: repeating-linear-gradient(90deg, #99ccff, #99ccff calc(100%/28), #99ccee calc(100%/28), #99ccee calc(100%/14));
 }
 
 .log_entry {
