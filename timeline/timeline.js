@@ -15,6 +15,8 @@ const default_time_options = {
 const default_scale = 100;
 const default_duration = 24*60*60*1000;
 const default_step = 60*60*1000;
+const default_background_color_a = "#f0f0f0";
+const default_background_color_b = "#e8e8e8";
 
 let all_tags = [];
 let all_tags_by_id = {};
@@ -64,6 +66,8 @@ function data_received(data, tags, tags_by_id) {
     generate_scale(first_timestamp, last_timestamp, default_step);
 
     set_time_scale_scale(duration_hours);
+
+    set_background(duration_hours);
 
     set_body_size(duration_hours*default_scale);
 }
@@ -216,6 +220,15 @@ function append_tags(tags, first_timestamp, duration) {
 function set_body_size(size) {
     let body = document.getElementById("body");
     body.style.width = size + "px";
+}
+
+function set_background(duration_hours) {
+    let log = document.getElementById("log");
+    log.style.background = "repeating-linear-gradient(90deg, " +
+        default_background_color_a + ", " +
+        default_background_color_a + " " + (100/duration_hours) + "%, " +
+        default_background_color_b + " " + (100/duration_hours) + "%, " +
+        default_background_color_b + " " + (100/duration_hours*2) + "%)";
 }
 
 function check_property(obj, property) {
