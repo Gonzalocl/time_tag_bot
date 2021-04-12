@@ -63,6 +63,8 @@ function data_received(data, tags, tags_by_id) {
 
     generate_scale(first_timestamp, last_timestamp, default_step);
 
+    set_time_scale_scale(duration_hours);
+
     set_body_size(duration_hours*default_scale);
 }
 
@@ -159,6 +161,14 @@ function generate_scale(timestamp_start, timestamp_end, step) {
         scale_date.appendChild(element_date);
         scale_time.appendChild(element_time);
     }
+}
+
+function set_time_scale_scale(duration_hours) {
+    let scale_date = document.getElementById("scale_date");
+    let scale_time = document.getElementById("scale_time");
+
+    scale_date.style.gridAutoColumns = 100/duration_hours + "%";
+    scale_time.style.gridAutoColumns = 100/duration_hours + "%";
 }
 
 function fix_no_end(tags) {
