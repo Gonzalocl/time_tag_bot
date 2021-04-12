@@ -10,8 +10,12 @@ body {
 }
 
 .scale {
-    display: grid;
-    grid-auto-flow: column;
+    display: flex;
+}
+
+.scale>div {
+    flex-grow: 1;
+    width: 0;
 }
 
 #scale_date {
