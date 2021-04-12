@@ -17,6 +17,7 @@ const default_duration = 24*60*60*1000;
 const default_step = 60*60*1000;
 const default_background_color_a = "#f0f0f0";
 const default_background_color_b = "#e8e8e8";
+const default_color_max = 100;
 
 let all_tags = [];
 let all_tags_by_id = {};
@@ -200,15 +201,31 @@ function append_tags(tags, first_timestamp, duration) {
     let log = document.getElementById("log");
     log.innerHTML = "";
     let unit_length = 100/duration;
+    let colors = {};
+
     for (let i = 0; i < tags.length; i++) {
         let entry = document.createElement("div");
         entry.innerText = tags[i].text;
         entry.className = "log_entry";
-        entry.style.backgroundColor = "blue";
+        entry.style.backgroundColor = get_tag_color(colors, tags[i].tag);
         entry.style.left = (tags[i].timestamp_start - first_timestamp)*unit_length + "%";
         entry.style.width = (tags[i].timestamp_end - tags[i].timestamp_start)*unit_length + "%";
         log.appendChild(entry);
     }
+}
+
+function get_tag_color(colors, tag) {
+    if (!colors.hasOwnProperty(tag)) {
+        colors[tag] = generate_color();
+    }
+    return colors[tag];
+}
+
+function generate_color() {
+    return "#" +
+        Math.floor(Math.random()*default_color_max).toString().padStart(2, "0") +
+        Math.floor(Math.random()*default_color_max).toString().padStart(2, "0") +
+        Math.floor(Math.random()*default_color_max).toString().padStart(2, "0");
 }
 
 function set_body_size(size) {
