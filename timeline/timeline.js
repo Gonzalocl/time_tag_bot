@@ -65,8 +65,6 @@ function data_received(data, tags, tags_by_id) {
 
     generate_scale(first_timestamp, last_timestamp, default_step);
 
-    set_time_scale_scale(duration_hours);
-
     set_background(duration_hours);
 
     set_body_size(duration_hours*default_scale);
@@ -167,14 +165,6 @@ function generate_scale(timestamp_start, timestamp_end, step) {
     }
 }
 
-function set_time_scale_scale(duration_hours) {
-    let scale_date = document.getElementById("scale_date");
-    let scale_time = document.getElementById("scale_time");
-
-    scale_date.style.gridAutoColumns = 100/duration_hours + "%";
-    scale_time.style.gridAutoColumns = 100/duration_hours + "%";
-}
-
 function fix_no_end(tags) {
     for (let i = 0; i < tags.length; i++) {
         if (!tags[i].hasOwnProperty("timestamp_end")) {
@@ -183,6 +173,8 @@ function fix_no_end(tags) {
     }
 }
 
+// this function requieres the tags array to be sorted
+// in descending order by timestamp_end
 function get_last_timestamp(tags) {
     let timestamp = tags[0].timestamp_end;
     let timestamp_date = new Date(timestamp);
@@ -193,6 +185,8 @@ function get_last_timestamp(tags) {
     return timestamp_date.getTime();
 }
 
+// this function requieres the tags array to be sorted
+// in ascending order by timestamp_start
 function get_first_timestamp(tags) {
     let timestamp = tags[0].timestamp_start;
     let timestamp_date = new Date(timestamp);
