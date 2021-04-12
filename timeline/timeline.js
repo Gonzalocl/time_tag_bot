@@ -149,8 +149,15 @@ function generate_scale(timestamp_start, timestamp_end, step) {
     // generate timestamps
     for (let timestamp = timestamp_start; timestamp < timestamp_end; timestamp+=step) {
         let timestamp_date = new Date(timestamp);
-        scale_date.innerText = timestamp_date.toLocaleString(default_locale, default_date_options);
-        scale_time.innerText = timestamp_date.toLocaleString(default_locale, default_time_options);
+
+        let element_date = document.createElement("div");
+        let element_time = document.createElement("div");
+
+        element_date.innerText = timestamp_date.toLocaleString(default_locale, default_date_options);
+        element_time.innerText = timestamp_date.toLocaleString(default_locale, default_time_options);
+
+        scale_date.appendChild(element_date);
+        scale_time.appendChild(element_time);
     }
 }
 
