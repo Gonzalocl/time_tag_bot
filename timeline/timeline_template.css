@@ -14,7 +14,7 @@ body {
     display: flex;
 }
 
-.scale div {
+.scale>div {
     flex-grow: 1;
     width: 0;
 }
