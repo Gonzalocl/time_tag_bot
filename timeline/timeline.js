@@ -59,7 +59,7 @@ function data_received(data, tags, tags_by_id) {
     let duration = last_timestamp-first_timestamp;
     let duration_hours = duration/1000/60/60;
 
-    append_tags(tags, duration_hours);
+    append_tags(tags, first_timestamp, duration);
 
     set_body_size(duration_hours*default_scale);
 }
@@ -181,11 +181,18 @@ function get_first_timestamp(tags) {
     return timestamp_date.getTime();
 }
 
-function append_tags(tags, duration_hours) {
+function append_tags(tags, first_timestamp, duration) {
     let log = document.getElementById("log");
     log.innerHTML = "";
+    let unit_length = 100/duration;
     for (let i = 0; i < tags.length; i++) {
-        // log.appendChild();
+        let entry = document.createElement("div");
+        entry.innerText = tags[i].text;
+        entry.className = "log_entry";
+        entry.style.backgroundColor = "blue";
+        entry.style.left = (tags[i].timestamp_start - first_timestamp)*unit_length + "%";
+        entry.style.width = (tags[i].timestamp_end - tags[i].timestamp_start)*unit_length + "%";
+        log.appendChild(entry);
     }
 }
 
