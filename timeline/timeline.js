@@ -256,3 +256,10 @@ function check_property(obj, property) {
 function error_msg(msg, obj) {
     document.getElementsByTagName("body")[0].innerHTML = msg + "<br><br>" + JSON.stringify(obj);
 }
+
+function horizontal_scroll(event) {
+    event.preventDefault();
+    window.scrollBy(event.deltaY, 0);
+}
+
+document.getElementById("log").onwheel = horizontal_scroll;
