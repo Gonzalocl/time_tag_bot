@@ -115,7 +115,7 @@ function get_text(t) {
 
 function process_commands(tags, tags_by_id, commands) {
     for (let i = 0; i < commands.length; i++) {
-        if (commands[i].tag in commands_functions) {
+        if (commands_functions.hasOwnProperty(commands[i].tag)) {
             commands_functions[commands[i].tag](tags, tags_by_id, commands[i]);
         } else {
             command_tag(tags, tags_by_id, commands[i]);
