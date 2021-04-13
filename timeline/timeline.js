@@ -130,6 +130,10 @@ function command_fix(tags, tags_by_id, command) {
 }
 
 function command_e(tags, tags_by_id, command) {
+    if (!tags_by_id.hasOwnProperty(command.end_id)) {
+        // TODO show warning and add placeholder
+        return;
+    }
     tags_by_id[command.end_id].timestamp_end = command.timestamp_start;
 }
 
