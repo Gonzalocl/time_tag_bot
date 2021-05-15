@@ -301,3 +301,6 @@ function horizontal_scroll(event) {
 }
 
 document.getElementById("log").onwheel = horizontal_scroll;
+
+// TODO consistency checks, start < end
+// TODO check fix times and DST
