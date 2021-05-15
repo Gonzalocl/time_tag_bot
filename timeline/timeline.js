@@ -19,8 +19,11 @@ const default_background_color_a = "#99ccff";
 const default_background_color_b = "#99ccee";
 const default_color_max = 100;
 
+const fix_command_pattern_time = /\/fix (\d\d):(\d\d)/;
+const fix_command_pattern_date = /\/fix (\d\d:\d\d \d\d\d\d-\d\d-\d\d)/;
+
 let all_tags = [];
-let all_tags_by_id = {};
+let all_tags_by_id = {"end_tags": {}};
 
 const commands_functions = {
     "/fix": command_fix,
@@ -126,7 +129,41 @@ function process_commands(tags, tags_by_id, commands) {
 // commands functions
 
 function command_fix(tags, tags_by_id, command) {
-    console.log("fix" + command.tag);
+
+    const fix_date = command.text.match(fix_command_pattern_date);
+    if (fix_date) {
+
+        const fix_timestamp = Date.parse(fix_date[1]);
+
+        if (tags_by_id.hasOwnProperty(command.end_id)) {
+            tags_by_id[command.end_id].timestamp_start = fix_timestamp;
+        } else {
+            tags_by_id[tags_by_id.end_tags[command.end_id].end_id].timestamp_end = fix_timestamp;
+        }
+
+        return;
+    }
+
+    const fix_time = command.text.match(fix_command_pattern_time);
+    if (fix_time) {
+
+        if (tags_by_id.hasOwnProperty(command.end_id)) {
+            const fix_date = new Date(tags_by_id[command.end_id].timestamp_start);
+            tags_by_id[command.end_id].timestamp_start = fix_date.setHours(fix_time[1], fix_time[2], 0);
+
+        } else {
+            const fix_date = new Date(tags_by_id[tags_by_id.end_tags[command.end_id].end_id].timestamp_end);
+            tags_by_id[tags_by_id.end_tags[command.end_id].end_id].timestamp_end = fix_date.setHours(fix_time[1], fix_time[2], 0);
+
+        }
+        return;
+    }
+
+    if (tags_by_id.hasOwnProperty(command.end_id)) {
+        tags_by_id[command.end_id].text += ("[" + command.text + "]");
+    } else {
+        tags_by_id[tags_by_id.end_tags[command.end_id].end_id].text += ("[" + command.text + "]");
+    }
 }
 
 function command_e(tags, tags_by_id, command) {
@@ -135,6 +172,7 @@ function command_e(tags, tags_by_id, command) {
         return;
     }
     tags_by_id[command.end_id].timestamp_end = command.timestamp_start;
+    tags_by_id.end_tags[command.id] = command;
 }
 
 function command_tag(tags, tags_by_id, command) {
