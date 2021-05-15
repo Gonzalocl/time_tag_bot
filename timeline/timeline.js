@@ -247,13 +247,26 @@ function append_tags(tags, first_timestamp, duration) {
 
     for (let i = 0; i < tags.length; i++) {
         let entry = document.createElement("div");
-        entry.innerText = tags[i].text;
+        entry.innerText = tag_text(tags[i]);
         entry.className = "log_entry";
         entry.style.backgroundColor = get_tag_color(colors, tags[i].tag);
         entry.style.left = (tags[i].timestamp_start - first_timestamp)*unit_length + "%";
         entry.style.width = (tags[i].timestamp_end - tags[i].timestamp_start)*unit_length + "%";
         log.appendChild(entry);
     }
+}
+
+function tag_text(tag) {
+    const start_time = new Date(tag.timestamp_start).toLocaleString(default_locale, default_time_options);
+    const end_time = new Date(tag.timestamp_end).toLocaleString(default_locale, default_time_options);
+
+    const duration = tag.timestamp_end - tag.timestamp_start;
+    const duration_hours = String(Math.floor(duration/1000/60/60)).padStart(2, "0");
+    const duration_minutes = String(Math.floor(duration/1000/60) % 60).padStart(2, "0");
+
+
+    return tag.text + " (" + start_time + "-" + end_time
+        + " # " + duration_hours + ":" + duration_minutes + ")";
 }
 
 function get_tag_color(colors, tag) {
