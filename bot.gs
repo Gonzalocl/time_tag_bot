@@ -1,10 +1,14 @@
 
 /*
-Publish > Deploy as web app...
-- New
-- Me
-- Anyone, even anonymous
+ - Create bot, copy token.
+ - Find log_chat_id and only_accept_chat_id.
+ - Deploy > New deployment > Web app > Execute as: Me, Who has access: Anyone > Deploy, copy url and set bot_url.
+ - Run set_webhook.
+ 
+ To update:
+  - Deploy > Manage deployments > Edit > New version > Deploy
 */
+
 var bot_url = '';
 var token = '';
 var telegram_api_url = 'https://api.telegram.org/bot';
