@@ -151,8 +151,14 @@ function set_custom_keyboard_and_replay(chat_id, message_id, buttons) {
 
 function set_webhook() {
   var response = telegram_api_call('setWebhook', {
-    url: bot_url
+    url: bot_url,
+    allowed_updates: ['message']
   });
+  Logger.log(JSON.stringify(response));
+}
+
+function get_webhook_info() {
+  var response = telegram_api_call('getWebhookInfo', {});
   Logger.log(JSON.stringify(response));
 }
 
