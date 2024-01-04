@@ -76,7 +76,6 @@ function check_update(update) {
 }
 
 function command_tag(update) {
-  var response = pin_chat_message(update.message.chat.id, update.message.message_id);
   // TODO check duplicates
   var tags_status = new_active_tag(update.message.chat.id,
                                    update.message.message_id,
@@ -93,8 +92,6 @@ function command_e(update) {
     log_msg('ERROR: command /e without replay', update);
     return;
   }
-  var response = unpin_chat_message(update.message.chat.id,
-                                    update.message.reply_to_message.message_id);
 }
 
 function command_tags_status(update) {
@@ -133,8 +130,6 @@ function command_end(update) {
     return;
   }
   
-  var response = unpin_chat_message(update.message.chat.id,
-                                    end_tag_message_id);
   
   var keyboard_buttons = get_custom_keyboard_buttons(tags_status[update.message.chat.id]);
   set_custom_keyboard_and_replay(update.message.chat.id, end_tag_message_id, keyboard_buttons);
@@ -199,6 +194,7 @@ function set_custom_keyboard(chat_id, text, buttons) {
   });
 }
 
+/*
 function pin_chat_message(chat_id, message_id) {
   return telegram_api_call('pinChatMessage', {
     'chat_id': chat_id,
@@ -212,6 +208,7 @@ function unpin_chat_message(chat_id, message_id) {
     'message_id': message_id
   });
 }
+*/
 
 function new_active_tag(chat_id, message_id, tag) {
   var propertiesService = PropertiesService.getScriptProperties();
